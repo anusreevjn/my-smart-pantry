@@ -10,7 +10,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
-
+import { Users, Bot } from 'lucide-react';
 interface AdminLayoutProps {
   children: ReactNode;
 }
@@ -19,8 +19,9 @@ const navItems = [
   { path: '/admin', icon: LayoutDashboard, label: 'Dashboard' },
   { path: '/admin/recipes', icon: UtensilsCrossed, label: 'Recipes' },
   { path: '/admin/reviews', icon: MessageSquare, label: 'Reviews' },
+  { path: '/admin/users', icon: Users, label: 'Users' }, // Added
+  { path: '/admin/scraper', icon: Bot, label: 'Web Scraper' }, // Added
 ];
-
 export function AdminLayout({ children }: AdminLayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
