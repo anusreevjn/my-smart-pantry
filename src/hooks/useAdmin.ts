@@ -180,3 +180,26 @@ export function useDeleteReview() {
     }
   });
 }
+// Add this inside src/hooks/useAdmin.ts
+
+export function useAllUsers() {
+  const { data: isAdmin } = useIsAdmin();
+  
+  return useQuery({
+    queryKey: ['admin-users'],
+    queryFn: async () => {
+      // Fetch profiles combined with roles
+      const { data, error } = await supabase
+        .from('profiles')
+        .select(`
+          *,
+          user_roles (role)
+        `)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: isAdmin === true
+  });
+}
