@@ -8,17 +8,28 @@ export function useReviews(recipeId: string) {
   return useQuery({
     queryKey: ['reviews', recipeId],
     queryFn: async () => {
-      const { data, error } = await supabase
+      // Fetch reviews
+      const { data: reviews, error } = await supabase
         .from('reviews')
-        .select(`
-          *,
-          profiles(username, avatar_url)
-        `)
+        .select('*')
         .eq('recipe_id', recipeId)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data as Review[];
+      if (!reviews) return [];
+
+      // Fetch profiles for the reviewers
+      const userIds = [...new Set(reviews.map(r => r.user_id))];
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('user_id, username, avatar_url')
+        .in('user_id', userIds);
+
+      // Map profiles to reviews
+      return reviews.map(review => ({
+        ...review,
+        profiles: profiles?.find(p => p.user_id === review.user_id) || { username: 'Anonymous', avatar_url: null }
+      })) as Review[];
     },
     enabled: !!recipeId
   });
