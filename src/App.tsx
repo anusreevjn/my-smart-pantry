@@ -12,6 +12,11 @@ import Register from "./pages/Register";
 import Favorites from "./pages/Favorites";
 import AISuggest from "./pages/AISuggest";
 import NotFound from "./pages/NotFound";
+import AdminLogin from "./pages/admin/AdminLogin";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminRecipes from "./pages/admin/AdminRecipes";
+import AdminReviews from "./pages/admin/AdminReviews";
+import { AdminRoute } from "./components/admin/AdminRoute";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +35,13 @@ const App = () => (
             <Route path="/register" element={<Register />} />
             <Route path="/favorites" element={<Favorites />} />
             <Route path="/ai-suggest" element={<AISuggest />} />
+            
+            {/* Admin routes */}
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+            <Route path="/admin/recipes" element={<AdminRoute><AdminRecipes /></AdminRoute>} />
+            <Route path="/admin/reviews" element={<AdminRoute><AdminReviews /></AdminRoute>} />
+            
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
