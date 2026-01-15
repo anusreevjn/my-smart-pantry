@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabase';
 import { Recipe, RecipeFilters, CuisineType, MealType, SpiceLevel } from '@/types/recipe';
 
 export function useRecipes(filters?: RecipeFilters) {
