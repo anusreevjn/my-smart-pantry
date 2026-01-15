@@ -57,17 +57,29 @@ export function useAllReviews() {
   return useQuery({
     queryKey: ['admin-reviews'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      // First get reviews with recipes
+      const { data: reviewsData, error: reviewsError } = await supabase
         .from('reviews')
         .select(`
           *,
-          recipes!inner(title),
-          profiles!reviews_user_id_fkey(username)
+          recipes(title)
         `)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      return data || [];
+      if (reviewsError) throw reviewsError;
+      
+      // Get all profiles to map usernames
+      const { data: profilesData } = await supabase
+        .from('profiles')
+        .select('user_id, username');
+      
+      const profilesMap = new Map(profilesData?.map(p => [p.user_id, p.username]) || []);
+      
+      // Map reviews with profile usernames
+      return (reviewsData || []).map(review => ({
+        ...review,
+        profiles: { username: profilesMap.get(review.user_id) || 'Unknown' }
+      }));
     },
     enabled: isAdmin === true
   });
